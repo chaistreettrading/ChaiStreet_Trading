@@ -50,9 +50,6 @@ app.add_middleware(
 
 
 auth_scheme = HTTPBearer()
-@app.get("/")
-def root():
-    return {"status": "Chaistreet backend running"}
 
 @app.on_event("startup")
 def _startup():
