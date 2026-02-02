@@ -48,7 +48,11 @@ app.add_middleware(
         "https://chai-street.vercel.app",
         FRONTEND_URL,
     ],
+<<<<<<< HEAD
     allow_credentials=False,   # ✅ IMPORTANT
+=======
+    allow_credentials=False,   # 🔥 IMPORTANT
+>>>>>>> 2ddc2a2f13beb9d15489b2a7c7004a93babe65f3
     allow_methods=["*"],
     allow_headers=["*"],
 )
