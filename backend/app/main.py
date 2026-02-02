@@ -26,14 +26,12 @@ print("CORS FRONTEND_URL =", FRONTEND_URL)  # debug (remove later)
 # ---------- CORS (FINAL FIX) ----------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://chai-street.vercel.app",
-        FRONTEND_URL,
-    ],
-    allow_credentials=False,  # ✅ Bearer-token safe
+    allow_origins=["*"],        # ✅ allow all
+    allow_credentials=False,    # ✅ required with "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # ---------- AUTH ----------
 # 🔥 IMPORTANT: auto_error=False to allow OPTIONS (preflight)
