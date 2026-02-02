@@ -1,10 +1,19 @@
-from fastapi import FastAPI, HTTPException, Depends
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# # 🔥 LOAD ENV FIRST
+# env_path = Path(__file__).resolve().parents[1] / ".env"
+# load_dotenv(env_path)
+
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime, timezone
 import uuid
+
 
 from .db import init_db, get_conn
 from .security import hash_password, verify_password, create_token, decode_token
@@ -18,41 +27,30 @@ from .discord_api import (
     add_to_guild,
 )
 
+# ---------- ENV ----------
+
+# print("ENV CHECK CLIENT ID:", os.getenv("DISCORD_CLIENT_ID"))
+
+
+# print("DISCORD_CLIENT_ID:", repr(os.getenv("DISCORD_CLIENT_ID")))
+# print("DISCORD_REDIRECT_URI:", repr(os.getenv("DISCORD_REDIRECT_URI")))
+
 # ---------- APP ----------
 app = FastAPI(title="Chaistreet API")
 
 
 
-print("CORS FRONTEND_URL =", FRONTEND_URL)  # debug (remove later)
-
-# ---------- CORS (FINAL FIX) ----------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://chai-street.vercel.app",   # frontend
-    ],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
- 
-# ---------- AUTH ----------
-# 🔥 IMPORTANT: auto_error=False to allow OPTIONS (preflight)
-auth_scheme = HTTPBearer(auto_error=False)
 
-def get_current_user(
-    creds: HTTPAuthorizationCredentials | None = Depends(auth_scheme),
-) -> dict:
-    if creds is None:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+auth_scheme = HTTPBearer()
 
-    try:
-        return decode_token(creds.credentials)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-# ---------- STARTUP ----------
 @app.on_event("startup")
 def _startup():
     init_db()
@@ -75,7 +73,13 @@ class LoginIn(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=64)
 
-# ---------- AUTH ROUTES ----------
+# ---------- AUTH ----------
+def get_current_user(creds: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> dict:
+    try:
+        return decode_token(creds.credentials)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
 @app.post("/auth/signup")
 def signup(data: SignupIn):
     email = data.email.lower().strip()
@@ -136,7 +140,7 @@ def login(data: LoginIn):
 
 @app.get("/me")
 def me(user=Depends(get_current_user)):
-    user_id = user["sub"]
+    user_id = user.get("sub")
 
     conn = get_conn()
     cur = conn.cursor()
@@ -182,7 +186,7 @@ def discord_callback(code: str, state: str):
         else duser["username"]
     )
 
-    # 3️⃣ add to guild
+    # 3️⃣ ADD USER TO SERVER  ✅ (BUG 3 FIX)
     add_to_guild(discord_user_id, access_token)
 
     # 4️⃣ update DB
@@ -209,5 +213,5 @@ def discord_callback(code: str, state: str):
     except Exception as e:
         print("Discord role error:", e)
 
-    # 6️⃣ redirect to frontend
+    # 6️⃣ redirect back to frontend
     return RedirectResponse(url=f"{FRONTEND_URL}/dashboard")
