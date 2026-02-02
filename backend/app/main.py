@@ -21,6 +21,18 @@ from .discord_api import (
 # ---------- APP ----------
 app = FastAPI(title="Chaistreet API")
 
+@app.options("/{path:path}")
+def preflight_handler(path: str, request: Request):
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        },
+    )
+
+
 print("CORS FRONTEND_URL =", FRONTEND_URL)  # debug (remove later)
 
 # ---------- CORS (FINAL FIX) ----------
