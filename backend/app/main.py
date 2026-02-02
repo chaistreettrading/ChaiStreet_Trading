@@ -42,8 +42,11 @@ app = FastAPI(title="Chaistreet API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
-    allow_credentials=True,
+    allow_origins=[
+        "https://chai-street.vercel.app",
+        FRONTEND_URL,
+    ],
+    allow_credentials=False,   # 🔥 IMPORTANT
     allow_methods=["*"],
     allow_headers=["*"],
 )
