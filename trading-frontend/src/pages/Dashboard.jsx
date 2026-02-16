@@ -114,7 +114,7 @@ export default function Dashboard() {
                   <Info title="Email" value={user.email} />
                   <Info title="Age Group" value={user.age_group} />
                   <Info title="Expertise" value={user.trading_expertise} />
-                </section>
+                </section> 
 
                 {/* ================= FOCUS AREAS ================= */}
                 <section className="mb-24">
