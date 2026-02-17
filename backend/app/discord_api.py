@@ -1,36 +1,49 @@
 import requests
 from urllib.parse import urlencode, quote
 
-
 from .config import (
-    DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI,
-    DISCORD_BOT_TOKEN, DISCORD_GUILD_ID,
-    ROLE_FREE_ID, ROLE_PRO_ID, ROLE_ELITE_ID
+    DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET,
+    DISCORD_REDIRECT_URI,
+    DISCORD_BOT_TOKEN,
+    DISCORD_GUILD_ID,
+    ROLE_FREE_ID,
+    ROLE_PRO_ID,
+    ROLE_ELITE_ID,
 )
-
-print("DISCORD_CLIENT_ID:", DISCORD_CLIENT_ID)
-
-
 
 DISCORD_API = "https://discord.com/api"
 
+
+# -----------------------------
+# OAuth URL Generator
+# -----------------------------
 def oauth_url(state: str) -> str:
     if not DISCORD_CLIENT_ID:
         raise RuntimeError("DISCORD_CLIENT_ID is missing")
     if not DISCORD_REDIRECT_URI:
         raise RuntimeError("DISCORD_REDIRECT_URI is missing")
 
+    redirect_uri = DISCORD_REDIRECT_URI.strip()
+
+    print("DISCORD_CLIENT_ID:", repr(DISCORD_CLIENT_ID))
+    print("DISCORD_REDIRECT_URI (oauth_url):", repr(redirect_uri))
+
     params = {
-    "client_id": str(DISCORD_CLIENT_ID),
-    "redirect_uri": DISCORD_REDIRECT_URI,
-    "response_type": "code",
-    "scope": "identify guilds.join",
-    "state": state,
-    "prompt": "consent",
-}
+        "client_id": str(DISCORD_CLIENT_ID),
+        "redirect_uri": redirect_uri,
+        "response_type": "code",
+        "scope": "identify guilds.join",
+        "state": state,
+        "prompt": "consent",
+    }
 
     return "https://discord.com/api/oauth2/authorize?" + urlencode(params, quote_via=quote)
 
+
+# -----------------------------
+# Exchange Code for Access Token
+# -----------------------------
 def exchange_code(code: str) -> dict:
     if not DISCORD_CLIENT_ID:
         raise RuntimeError("DISCORD_CLIENT_ID missing")
@@ -39,12 +52,17 @@ def exchange_code(code: str) -> dict:
     if not DISCORD_REDIRECT_URI:
         raise RuntimeError("DISCORD_REDIRECT_URI missing")
 
+    redirect_uri = DISCORD_REDIRECT_URI.strip()
+
+    print("DISCORD_REDIRECT_URI (exchange_code):", repr(redirect_uri))
+    print("CODE RECEIVED:", repr(code))
+
     data = {
         "client_id": str(DISCORD_CLIENT_ID),
         "client_secret": DISCORD_CLIENT_SECRET,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": DISCORD_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
     }
 
     headers = {
@@ -52,14 +70,22 @@ def exchange_code(code: str) -> dict:
         "User-Agent": "Chaistreet/1.0",
     }
 
-    r = requests.post(f"{DISCORD_API}/oauth2/token", data=data, headers=headers, timeout=20)
+    r = requests.post(
+        f"{DISCORD_API}/oauth2/token",
+        data=data,
+        headers=headers,
+        timeout=20,
+    )
 
-    # Helpful debug if it fails
     if r.status_code != 200:
         raise RuntimeError(f"Discord token exchange failed: {r.status_code} {r.text}")
 
     return r.json()
 
+
+# -----------------------------
+# Get Discord User
+# -----------------------------
 def get_user(access_token: str) -> dict:
     r = requests.get(
         f"{DISCORD_API}/users/@me",
@@ -69,37 +95,62 @@ def get_user(access_token: str) -> dict:
     r.raise_for_status()
     return r.json()
 
+
+# -----------------------------
+# Role Selection Based on Tier
+# -----------------------------
 def role_for_tier(tier: str) -> str:
     t = (tier or "FREE").upper()
+
     if t == "ELITE":
         return ROLE_ELITE_ID
     if t == "PRO":
         return ROLE_PRO_ID
+
     return ROLE_FREE_ID
 
+
+# -----------------------------
+# Add Role to User (Bot Token)
+# -----------------------------
 def add_role(discord_user_id: str, role_id: str) -> None:
     """
     Requires:
     - Bot added to your server (guild)
     - Bot permission: Manage Roles
+    - Role must be below bot's highest role
     - User must be a member of the server already
     """
+
     if not (DISCORD_BOT_TOKEN and DISCORD_GUILD_ID and role_id):
-        return  # silently skip in dev if not configured
+        print("Skipping add_role: missing config")
+        return
 
     url = f"{DISCORD_API}/guilds/{DISCORD_GUILD_ID}/members/{discord_user_id}/roles/{role_id}"
+
     r = requests.put(
         url,
         headers={"Authorization": f"Bot {DISCORD_BOT_TOKEN}"},
         timeout=20,
     )
-    # 204 = success
+
     if r.status_code not in (204, 201, 200):
         raise RuntimeError(f"Discord role assign failed: {r.status_code} {r.text}")
-    
 
-def add_to_guild(discord_user_id: str, access_token: str):
+
+# -----------------------------
+# Add User to Guild (guilds.join)
+# -----------------------------
+def add_to_guild(discord_user_id: str, access_token: str) -> None:
+    """
+    Requires:
+    - OAuth scope: guilds.join
+    - Bot must be in the server
+    - Bot must have permission to create invites / manage members
+    """
+
     if not (DISCORD_BOT_TOKEN and DISCORD_GUILD_ID):
+        print("Skipping add_to_guild: missing bot token or guild id")
         return
 
     url = f"{DISCORD_API}/guilds/{DISCORD_GUILD_ID}/members/{discord_user_id}"
@@ -115,7 +166,4 @@ def add_to_guild(discord_user_id: str, access_token: str):
     )
 
     if r.status_code not in (201, 204):
-        raise RuntimeError(
-            f"Guild join failed: {r.status_code} {r.text}"
-        )
-
+        raise RuntimeError(f"Guild join failed: {r.status_code} {r.text}")
