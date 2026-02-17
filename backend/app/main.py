@@ -177,15 +177,13 @@ def discord_oauth_start(user=Depends(get_current_user)):
 
 @app.get("/discord/callback")
 def discord_callback(code: str, state: str):
-    try:
-        token_json = exchange_code(code)
-    except Exception as e:
-        # If code already used, just redirect to dashboard
-        print("Discord exchange error:", e)
-        return RedirectResponse(url=f"{FRONTEND_URL}/dashboard", status_code=302)
+    user_id = state
 
+    # 1️⃣ exchange code
+    token_json = exchange_code(code)
     access_token = token_json["access_token"]
 
+    # 2️⃣ get discord user
     duser = discord_get_user(access_token)
     discord_user_id = duser["id"]
     discord_username = (
@@ -194,27 +192,32 @@ def discord_callback(code: str, state: str):
         else duser["username"]
     )
 
+    # 3️⃣ ADD USER TO SERVER  ✅ (BUG 3 FIX)
     add_to_guild(discord_user_id, access_token)
 
+    # 4️⃣ update DB
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("SELECT tier FROM users WHERE id = ?", (state,))
+    cur.execute("SELECT tier FROM users WHERE id = ?", (user_id,))
     row = cur.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Invalid state")
 
-    if row:
-        tier = row["tier"]
-        cur.execute(
-            "UPDATE users SET discord_user_id=?, discord_username=? WHERE id=?",
-            (discord_user_id, discord_username, state),
-        )
-        conn.commit()
+    tier = row["tier"]
 
-        try:
-            add_role(discord_user_id, role_for_tier(tier))
-        except Exception as e:
-            print("Discord role error:", e)
-
+    cur.execute(
+        "UPDATE users SET discord_user_id=?, discord_username=? WHERE id=?",
+        (discord_user_id, discord_username, user_id),
+    )
+    conn.commit()
     conn.close()
 
-    return RedirectResponse(url=f"{FRONTEND_URL}/dashboard", status_code=302)
+    # 5️⃣ assign role
+    try:
+        add_role(discord_user_id, role_for_tier(tier))
+    except Exception as e:
+        print("Discord role error:", e)
 
+    # 6️⃣ redirect back to frontend
+    return RedirectResponse(url=f"{FRONTEND_URL}/dashboard")

@@ -24,7 +24,7 @@ def oauth_url(state: str) -> str:
     "client_id": str(DISCORD_CLIENT_ID),
     "redirect_uri": DISCORD_REDIRECT_URI,
     "response_type": "code",
-    "scope": "identify email guilds.join",
+    "scope": "identify guilds.join",
     "state": state,
     "prompt": "consent",
 }
