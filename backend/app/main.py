@@ -220,4 +220,5 @@ def discord_callback(code: str, state: str):
         print("Discord role error:", e)
 
     # 6️⃣ redirect back to frontend
-    return RedirectResponse(url=f"{FRONTEND_URL}/dashboard")
+    return RedirectResponse(url=f"{FRONTEND_URL}/dashboard", status_code=302)
+
