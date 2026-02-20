@@ -46,7 +46,7 @@ export default function Dashboard() {
       {/* Header */}
       <header className="relative z-10 w-full px-8 md:px-16 lg:px-24 py-4 flex items-center justify-between" style={{ background: "rgba(8,11,20,0.85)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
         <Link to="/" className="flex items-center gap-3">
-          <img src="/chai-logo.png" alt="Chai Street Trading" style={{ height: "36px", width: "auto", filter: "drop-shadow(0 0 8px rgba(212,175,55,0.6)) brightness(1.05)" }} />
+          <img src="/cup.png" alt="Chai Street Trading" style={{ height: "36px", width: "auto", filter: "drop-shadow(0 0 8px rgba(212,175,55,0.6)) brightness(1.05)" }} />
           <span style={{ fontSize: "12px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>Chai Street</span>
         </Link>
 
