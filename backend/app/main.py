@@ -15,9 +15,7 @@ from datetime import datetime, timezone
 import uuid
 
 
-from sqlalchemy.orm import Session
-from .db import engine, get_db
-from .models import Base, User
+from .db import init_db, get_conn
 from .security import hash_password, verify_password, create_token, decode_token
 from .config import FRONTEND_URL
 from .discord_api import (
@@ -60,8 +58,8 @@ app.add_middleware(
 auth_scheme = HTTPBearer()
 
 @app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
+def _startup():
+    init_db()
 
 @app.get("/health")
 def health():
@@ -89,63 +87,88 @@ def get_current_user(creds: HTTPAuthorizationCredentials = Depends(auth_scheme))
         raise HTTPException(status_code=401, detail="Invalid token")
 
 @app.post("/auth/signup")
-def signup(data: SignupIn, db: Session = Depends(get_db)):
+def signup(data: SignupIn):
     email = data.email.lower().strip()
 
-    existing = db.query(User).filter(User.email == email).first()
-    if existing:
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id FROM users WHERE email = ?", (email,))
+    if cur.fetchone():
+        conn.close()
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    user = User(
-        id=str(uuid.uuid4()),
-        email=email,
-        password_hash=hash_password(data.password),
-        first_name=data.first_name,
-        last_name=data.last_name,
-        age_group=data.age_group,
-        trading_expertise=data.trading_expertise,
-        focus_areas=",".join(data.focus_areas),
-        tier="FREE",
-        created_at=datetime.now(timezone.utc).isoformat(),
+    user_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+
+    cur.execute(
+        """
+        INSERT INTO users (
+            id, email, password_hash,
+            first_name, last_name,
+            age_group, trading_expertise,
+            focus_areas, tier, created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'FREE', ?)
+        """,
+        (
+            user_id,
+            email,
+            hash_password(data.password),
+            data.first_name,
+            data.last_name,
+            data.age_group,
+            data.trading_expertise,
+            ",".join(data.focus_areas),
+            now,
+        ),
     )
 
-    db.add(user)
-    db.commit()
+    conn.commit()
+    conn.close()
 
-    return {"token": create_token(user.id)}
+    return {"token": create_token(user_id)}
 
 @app.post("/auth/login")
-def login(data: LoginIn, db: Session = Depends(get_db)):
+def login(data: LoginIn):
     email = data.email.lower().strip()
 
-    user = db.query(User).filter(User.email == email).first()
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email = ?", (email,))
+    row = cur.fetchone()
+    conn.close()
 
-    if not user or not verify_password(data.password, user.password_hash):
+    if not row or not verify_password(data.password, row["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    return {"token": create_token(user.id)}
+    return {"token": create_token(row["id"])}
 
 @app.get("/me")
-def me(user=Depends(get_current_user), db: Session = Depends(get_db)):
+def me(user=Depends(get_current_user)):
     user_id = user.get("sub")
 
-    db_user = db.query(User).filter(User.id == user_id).first()
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            id, email, first_name, last_name,
+            age_group, trading_expertise,
+            focus_areas, tier,
+            discord_user_id, discord_username
+        FROM users
+        WHERE id = ?
+        """,
+        (user_id,),
+    )
+    row = cur.fetchone()
+    conn.close()
 
-    if not db_user:
+    if not row:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return {
-        "id": db_user.id,
-        "email": db_user.email,
-        "first_name": db_user.first_name,
-        "last_name": db_user.last_name,
-        "age_group": db_user.age_group,
-        "trading_expertise": db_user.trading_expertise,
-        "focus_areas": db_user.focus_areas,
-        "tier": db_user.tier,
-        "discord_user_id": db_user.discord_user_id,
-        "discord_username": db_user.discord_username,
-    }
+    return dict(row)
 
 # ---------- DISCORD ----------
 @app.get("/discord/oauth/url")
