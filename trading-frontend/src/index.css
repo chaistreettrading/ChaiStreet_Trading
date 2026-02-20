@@ -1,15 +1,128 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap');
+
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ================= BASE ================= */
 @layer base {
   :root {
+    /* ========== BACKGROUNDS ========== */
+    --background: 40 33% 97%;
+    --background-cream: 40 30% 96%;
+    --background-warm: 38 25% 94%;
+    --foreground: 30 10% 15%;
+
+    /* ========== CARD & SURFACE ========== */
+    --card: 40 30% 98%;
+    --card-foreground: 30 10% 15%;
+    --popover: 40 30% 98%;
+    --popover-foreground: 30 10% 15%;
+
+    /* ========== GOLD SYSTEM (Chai-Gold) ========== */
     --gold: 38 65% 50%;
+    --gold-light: 40 50% 70%;
+    --gold-dark: 36 45% 35%;
+    --gold-glow: 38 70% 55%;
+    --gold-muted: 38 35% 60%;
+
+    /* ========== PRIMARY (Mapped to Gold) ========== */
+    --primary: 38 65% 50%;
+    --primary-foreground: 40 30% 98%;
+
+    /* ========== SECONDARY ========== */
+    --secondary: 38 20% 90%;
+    --secondary-foreground: 30 10% 20%;
+
+    /* ========== MUTED ========== */
+    --muted: 40 15% 92%;
+    --muted-foreground: 30 10% 45%;
+
+    /* ========== ACCENT ========== */
+    --accent: 38 40% 85%;
+    --accent-foreground: 36 45% 30%;
+
+    /* ========== DESTRUCTIVE ========== */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* ========== BORDER & INPUT ========== */
+    --border: 38 25% 85%;
+    --input: 38 20% 88%;
+    --ring: 38 65% 50%;
+
+    /* ========== STONE SCALE ========== */
+    --stone-200: 30 10% 88%;
+    --stone-300: 30 10% 78%;
+    --stone-400: 30 8% 60%;
+    --stone-500: 30 6% 50%;
+    --stone-600: 30 8% 40%;
+    --stone-700: 30 10% 30%;
+    --stone-800: 30 12% 20%;
+    --stone-900: 30 15% 12%;
+
+    /* ========== CREAM GRADIENT STOPS ========== */
+    --cream-start: 40 33% 98%;
+    --cream-mid: 0 0% 100%;
+    --cream-end: 38 30% 95%;
+
+    /* ========== SIDEBAR ========== */
+    --sidebar-background: 40 30% 97%;
+    --sidebar-foreground: 30 10% 25%;
+    --sidebar-primary: 38 65% 50%;
+    --sidebar-primary-foreground: 40 30% 98%;
+    --sidebar-accent: 38 40% 90%;
+    --sidebar-accent-foreground: 36 45% 30%;
+    --sidebar-border: 38 25% 85%;
+    --sidebar-ring: 38 65% 50%;
+
+    /* ========== RADIUS ========== */
+    --radius: 0.25rem;
+
+    /* ========== SHADOWS ========== */
+    --shadow-gold: 0 4px 20px -4px hsl(38 65% 50% / 0.15);
+    --shadow-gold-soft: 0 4px 24px -6px hsl(38 65% 50% / 0.2);
+    --shadow-glass: 0 8px 32px -8px hsl(30 10% 15% / 0.08);
+    --shadow-soft: 0 2px 12px -2px hsl(30 10% 15% / 0.06);
+
+    /* ========== GRADIENTS ========== */
+    --gradient-cream: linear-gradient(180deg, hsl(40 33% 97%) 0%, hsl(40 30% 96%) 50%, hsl(38 25% 94%) 100%);
+    --gradient-gold-line: linear-gradient(90deg, transparent 0%, hsl(38 65% 50% / 0.5) 50%, transparent 100%);
+  }
+
+  .dark {
+    --background: 30 15% 8%;
     --foreground: 40 30% 95%;
+    --card: 30 12% 12%;
+    --card-foreground: 40 30% 95%;
+    --popover: 30 12% 12%;
+    --popover-foreground: 40 30% 95%;
+    --primary: 38 65% 50%;
+    --primary-foreground: 30 15% 8%;
+    --secondary: 30 10% 18%;
+    --secondary-foreground: 40 30% 90%;
+    --muted: 30 10% 20%;
+    --muted-foreground: 40 20% 65%;
+    --accent: 38 40% 25%;
+    --accent-foreground: 40 50% 80%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 10% 22%;
+    --input: 30 10% 20%;
+    --ring: 38 65% 50%;
+    --sidebar-background: 30 12% 10%;
+    --sidebar-foreground: 35 10% 80%;
+    --sidebar-primary: 38 65% 55%;
+    --sidebar-primary-foreground: 30 15% 8%;
+    --sidebar-accent: 30 8% 18%;
+    --sidebar-accent-foreground: 35 10% 80%;
+    --sidebar-border: 30 8% 22%;
+    --sidebar-ring: 38 65% 55%;
+  }
+
+  * {
+    @apply border-border;
   }
 
   html {
@@ -17,296 +130,299 @@
   }
 
   body {
-    background: transparent; /* IMPORTANT */
-    color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, sans-serif;
-    overflow-x: hidden;
+  @apply bg-background text-foreground antialiased;
+  font-family: 'Inter Tight', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter Tight', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+}
+
+@layer components {
+  /* ========== GRADIENT BACKGROUNDS ========== */
+  .gradient-cream {
+    background: linear-gradient(180deg, hsl(var(--cream-start)), hsl(var(--cream-mid)), hsl(var(--cream-end)));
   }
 
-  h1, h2, h3, h4 {
-    font-family: 'Cormorant Garamond', serif;
+  .gradient-gold-line {
+    background: linear-gradient(90deg, transparent 0%, hsl(38 65% 50% / 0.5) 50%, transparent 100%);
+  }
+
+  /* ========== GLASS CARD ========== */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+    box-shadow: var(--shadow-glass);
+  }
+
+  .glass-card-gold {
+    @apply bg-card/80 backdrop-blur-sm border border-gold-light/30;
+    box-shadow: var(--shadow-gold-soft);
+  }
+
+  /* ========== BUTTON STYLES ========== */
+  .btn-gold {
+    @apply relative overflow-hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-gold::before {
+    content: '';
+    @apply absolute inset-0 opacity-0;
+    background: linear-gradient(135deg, hsl(38 65% 50% / 0.1) 0%, hsl(38 70% 55% / 0.05) 100%);
+    transition: opacity 0.5s ease;
+  }
+
+  .btn-gold:hover::before {
+    @apply opacity-100;
+  }
+
+  /* ========== LINK UNDERLINE ========== */
+  .link-underline {
+    @apply relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px scale-x-0 origin-right;
+    background: hsl(var(--gold));
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline:hover::after {
+    @apply scale-x-100 origin-left;
+  }
+
+  /* ========== PREMIUM INPUT ========== */
+  .input-premium {
+    @apply bg-transparent border-0 border-b-2 border-stone-300 rounded-none;
+    @apply focus:outline-none focus:border-gold focus:ring-0;
+    transition: border-color 0.4s ease;
+  }
+
+  .input-premium:focus {
+    box-shadow: 0 2px 0 0 hsl(38 65% 50% / 0.3);
+  }
+
+  /* ========== GOLD LINE ========== */
+  .gold-line {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent 0%, hsl(38 65% 50% / 0.4) 50%, transparent 100%);
+  }
+
+  .gold-line-solid {
+    @apply h-px;
+    background: linear-gradient(90deg, hsl(38 65% 50% / 0.8) 0%, hsl(38 65% 50%) 50%, hsl(38 65% 50% / 0.8) 100%);
+  }
+
+  /* ========== GOLD GLOW ========== */
+  .gold-glow {
+    box-shadow: 0 0 20px -5px hsl(var(--gold) / 0.3);
+  }
+
+  /* ========== AMBIENT GLOW ========== */
+  .ambient-glow-gold {
+    background: radial-gradient(circle, hsl(38 65% 50% / 0.08) 0%, transparent 70%);
+  }
+
+  .ambient-glow-cream {
+    background: radial-gradient(circle, hsl(40 30% 96% / 0.5) 0%, transparent 70%);
   }
 }
 
-/* ================= ANIMATIONS ================= */
+@layer utilities {
+  /* ========== TRACKING ========== */
+  .tracking-ultra {
+    letter-spacing: 0.25em;
+  }
 
-/* Gradient drift */
-@keyframes gradient-drift {
-  0% { background-position: 50% 0%; }
-  50% { background-position: 50% 100%; }
-  100% { background-position: 50% 0%; }
+  .tracking-wide-custom {
+    letter-spacing: 0.15em;
+  }
+
+  /* ========== SHADOW UTILITIES ========== */
+  .shadow-gold {
+    box-shadow: 0 4px 20px -4px hsl(38 65% 50% / 0.15);
+  }
+
+  .shadow-gold-soft {
+    box-shadow: 0 4px 24px -6px hsl(38 65% 50% / 0.2);
+  }
+
+  .shadow-goldSoft {
+    box-shadow: 0 4px 20px -4px hsl(38 65% 50% / 0.15);
+  }
+
+  .shadow-glass {
+    box-shadow: 0 8px 32px -8px hsl(30 10% 15% / 0.08);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 2px 12px -2px hsl(30 10% 15% / 0.06);
+  }
+
+  /* ========== ANIMATION DELAYS ========== */
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .delay-600 {
+    animation-delay: 600ms;
+  }
+
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+
+  /* ========== TEXT UTILITIES ========== */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* ========== BACKDROP ========== */
+  .backdrop-blur-premium {
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+  }
 }
 
-/* Floating particles */
-.market-particle {
-  position: absolute;
-  bottom: -20px;
-  border-radius: 9999px;
-  opacity: 0.95;
-  animation-name: floatUp;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  filter: drop-shadow(0 0 6px rgba(212,175,55,0.5));
-}
-
-@keyframes floatUp {
+/* ========== KEYFRAME ANIMATIONS ========== */
+@keyframes fade-in-up {
   0% {
-    transform: translateY(0) scale(1);
     opacity: 0;
+    transform: translateY(20px);
   }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
   100% {
-    transform: translateY(-120vh) scale(1.4);
-    opacity: 0;
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Slide-in menu */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px -5px hsl(38 65% 50% / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px -5px hsl(38 65% 50% / 0.35);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== ANIMATION CLASSES ========== */
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-float-subtle {
+  animation: float-subtle 6s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(40 30% 96%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(38 35% 60%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(38 65% 50%);
+}
+
+/* ========== SELECTION ========== */
+::selection {
+  background: hsl(38 65% 50% / 0.2);
+  color: hsl(30 15% 12%);
+}
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .animate-slideIn {
   animation: slideIn 0.3s ease-out forwards;
 }
-
-.market-particle {
-  position: absolute;
-  bottom: -20px;
-  border-radius: 9999px;
-  opacity: 0.95;
-  animation-name: floatUp;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  filter: drop-shadow(0 0 6px rgba(212,175,55,0.6));
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) scale(1); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-120vh) scale(1.4); opacity: 0; }
-}
-
-/* ================= MARKET STRUCTURE ================= */
-
-.market-level {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(212,175,55,0.45),
-    transparent
-  );
-  opacity: 0.4;
-  animation: scanLevel 8s ease-in-out infinite;
-}
-
-@keyframes scanLevel {
-  0% { opacity: 0.1; }
-  50% { opacity: 0.6; }
-  100% { opacity: 0.1; }
-}
-
-/* ================= PRICE NODES ================= */
-
-.price-node {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: #d4af37;
-  border-radius: 9999px;
-  opacity: 0;
-  animation: nodePulse 5s ease-in-out infinite;
-  box-shadow: 0 0 14px rgba(212,175,55,0.8);
-}
-
-@keyframes nodePulse {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  60% {
-    transform: scale(1.4);
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-}
-
-/* ================= MARKET FLOW BUBBLES ================= */
-
-.market-bubble {
-  position: absolute;
-  bottom: -40px;
-  border-radius: 9999px;
-
-  /* GOLDEN TRANSPARENT LOOK */
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 215, 120, 0.45),
-    rgba(212, 175, 55, 0.25),
-    rgba(212, 175, 55, 0.08)
-  );
-
-  opacity: 0;
-  filter: blur(0.6px);
-
-  animation: bubbleFloat linear infinite;
-}
-
-/* NO SIZE CHANGE — ONLY FLOAT */
-@keyframes bubbleFloat {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-
-  15% {
-    opacity: 0.35;
-  }
-
-  50% {
-    opacity: 0.55;
-  }
-
-  85% {
-    opacity: 0.35;
-  }
-
-  100% {
-    transform: translateY(-120vh);
-    opacity: 0;
-  }
-}
-
-/* ================= LIQUIDITY FLOW BANDS (REFINED) ================= */
-
-.liquidity-band {
-  position: absolute;
-  left: -40%;
-  width: 180%;
-  height: 36px; /* 👈 thinner */
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(212, 175, 55, 0.12),
-    rgba(212, 175, 55, 0.18),
-    rgba(212, 175, 55, 0.12),
-    transparent
-  );
-
-  opacity: 0.35; /* 👈 lighter */
-  filter: blur(10px); /* 👈 softer glow */
-
-  animation: liquidityFlow linear infinite;
-}
-
-/* Diagonal time + price movement */
-@keyframes liquidityFlow {
-  0% {
-    transform: translateX(0) translateY(0);
-    opacity: 0;
-  }
-
-  15% {
-    opacity: 0.25;
-  }
-
-  50% {
-    opacity: 0.45;
-  }
-
-  85% {
-    opacity: 0.25;
-  }
-
-  100% {
-    transform: translateX(35%) translateY(-120vh);
-    opacity: 0;
-  }
-}
-
-/* ===== Premium Gold Glow Card ===== */
-.gold-card {
-  position: relative;
-}
-
-.gold-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(212,175,55,0.8),
-    rgba(212,175,55,0.2),
-    rgba(212,175,55,0.6)
-  );
-  opacity: 0.45;
-  filter: blur(6px);
-  z-index: -1;
-}
-
-.gold-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  background: radial-gradient(
-    circle at top,
-    rgba(212,175,55,0.12),
-    transparent 65%
-  );
-  pointer-events: none;
-}
-/* ===== Trading Grid Background ===== */
-.grid-bg {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.15;
-  pointer-events: none;
-}
-
-
-/* optional soft vignette */
-.grid-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 30%,
-    rgba(0,0,0,0.85) 100%
-  );
-  pointer-events: none;
-}
-.bg-black-base {
-  position: absolute;
-  inset: 0;
-  background: rgba(7,11,16,0.92);
-  pointer-events: none;
-}
-
 

@@ -14,20 +14,16 @@ module.exports = {
       },
     },
     extend: {
-      /* ================= FONTS ================= */
       fontFamily: {
         serif: ["Cormorant Garamond", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
       },
-
-      /* ================= COLORS ================= */
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -56,7 +52,6 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-
         gold: {
           DEFAULT: "hsl(var(--gold))",
           light: "hsl(var(--gold-light))",
@@ -64,7 +59,6 @@ module.exports = {
           glow: "hsl(var(--gold-glow))",
           muted: "hsl(var(--gold-muted))",
         },
-
         stone: {
           200: "hsl(var(--stone-200))",
           300: "hsl(var(--stone-300))",
@@ -76,8 +70,6 @@ module.exports = {
           900: "hsl(var(--stone-900))",
         },
       },
-
-      /* ================= SHADOWS ================= */
       boxShadow: {
         gold: "0 4px 20px -4px hsl(38 65% 50% / 0.15)",
         "gold-soft": "0 4px 24px -6px hsl(38 65% 50% / 0.2)",
@@ -85,76 +77,17 @@ module.exports = {
         glass: "0 8px 32px -8px hsl(30 10% 15% / 0.08)",
         soft: "0 2px 12px -2px hsl(30 10% 15% / 0.06)",
       },
-
-      /* ================= LETTER SPACING ================= */
       letterSpacing: {
         ultra: "0.25em",
         "wide-custom": "0.15em",
       },
-
-      /* ================= KEYFRAMES ================= */
-      keyframes: {
-        "fade-in-up": {
-          "0%": { opacity: 0, transform: "translateY(16px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        },
-
-        /* 🔥 IMPROVED BUBBLE / STEAM ANIMATION */
-        floatDot: {
-          "0%": {
-            transform: "translate3d(0,0,0)",
-            opacity: "0.15",
-          },
-          "20%": {
-            opacity: "0.6",
-          },
-          "100%": {
-            transform: "translate3d(80px,-280px,0)",
-            opacity: "0",
-          },
-        },
-
-        "fade-in": {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
-        },
-        "slide-up": {
-          "0%": { opacity: 0, transform: "translateY(24px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        },
-        "float-subtle": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-6px)" },
-        },
-        "glow-pulse": {
-          "0%, 100%": { opacity: 0.4 },
-          "50%": { opacity: 1 },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-
-        goldSweep: {
-          "0%": { transform: "translateX(-50%)" },
-          "100%": { transform: "translateX(250%)" },
-        },
-      },
-
-      /* ================= ANIMATIONS ================= */
       animation: {
         "fade-in-up": "fade-in-up 0.8s ease-out forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
-        "slide-up": "slide-up 0.6s ease-out forwards",
         "float-subtle": "float-subtle 6s ease-in-out infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
         shimmer: "shimmer 2s linear infinite",
-
-        /* 🔥 FAST + VISIBLE BUBBLES */
-        "float-dot": "floatDot 8s linear infinite",
-
-        /* GOLD LINE */
-        "gold-sweep": "goldSweep 5.5s ease-in-out infinite",
+        "slide-up": "slide-up 0.6s ease-out forwards",
       },
     },
   },
