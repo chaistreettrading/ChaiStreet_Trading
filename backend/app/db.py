@@ -1,40 +1,28 @@
-import sqlite3
+# backend/app/db.py
+
 import os
-from pathlib import Path
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-DB_PATH = Path(os.getenv("DB_PATH", "./data.db"))
+DATABASE_URL = os.getenv("DATABASE_URL")
 
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is missing")
 
-def get_conn() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+engine = create_engine(DATABASE_URL)
 
-def init_db() -> None:
-    conn = get_conn()
-    cur = conn.cursor()
-    
-    cur.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-
-    first_name TEXT,
-    last_name TEXT,
-    age_group TEXT,
-    trading_expertise TEXT,
-
-    focus_areas TEXT,   -- comma separated
-
-    tier TEXT NOT NULL DEFAULT 'FREE',
-    created_at TEXT NOT NULL,
-
-    discord_user_id TEXT,
-    discord_username TEXT
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
 )
-""")
+
+Base = declarative_base()
 
 
-    conn.commit()
-    conn.close()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
