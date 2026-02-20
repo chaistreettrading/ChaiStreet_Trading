@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   CHAI STREET — PREMIUM WALL STREET DESIGN SYSTEM
+   Tailwind v3 compatible (Lovable safe)
+   ========================================================= */
+
+/* ---------- BASE THEME VARIABLES ---------- */
+@layer base {
+  :root {
+    /* Core surfaces */
+    --bg-cream: #faf7f2;
+    --bg-card: #ffffff;
+    --border-soft: rgba(200, 179, 126, 0.35);
+
+    /* Text */
+    --text-main: #1c1c1c;
+    --text-muted: #6b6b6b;
+
+    /* Gold / Chai */
+    --gold: #c8b37e;
+    --gold-dark: #6b5a2a;
+    --gold-soft: rgba(200, 179, 126, 0.15);
+  }
+
+  body {
+    background: linear-gradient(
+      180deg,
+      #faf7f2 0%,
+      #ffffff 40%,
+      #f3eee6 100%
+    );
+    color: var(--text-main);
+    font-family: "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Cormorant Garamond", serif;
+  }
+}
+
+/* ---------- COMPONENTS ---------- */
+@layer components {
+  /* Glass / premium card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Ultra spacing (Wall Street feel) */
+  .tracking-ultra {
+    letter-spacing: 0.25em;
+  }
+
+  /* Cream page gradient helper */
+  .gradient-cream {
+    background: linear-gradient(
+      180deg,
+      #faf7f2 0%,
+      #ffffff 40%,
+      #f3eee6 100%
+    );
+  }
+
+  /* Gold button (Lovable style) */
+  .btn-gold {
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    padding: 14px 36px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    background: transparent;
+    transition: all 0.4s ease;
+  }
+
+  .btn-gold:hover {
+    background: var(--gold-soft);
+    box-shadow: 0 12px 30px rgba(200, 179, 126, 0.35);
+  }
+
+  /* Gold divider line */
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(200, 179, 126, 0.8),
+      transparent
+    );
+  }
+}
+
+/* ---------- UTILITIES ---------- */
+@layer utilities {
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+  }
+}
+
+/* ---------- ANIMATIONS (LOVABLE SAFE) ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out both;
+}
