@@ -804,7 +804,7 @@ export default function Landing() {
       <footer className="relative z-10 py-10 px-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/chai-logo.png" alt="Chai Street Trading" style={{ height: "28px", width: "auto", objectFit: "contain", opacity: 0.7, filter: "drop-shadow(0 0 5px rgba(212,175,55,0.4))" }} />
+            <img src="/cup.png" alt="Chai Street Trading" style={{ height: "28px", width: "auto", objectFit: "contain", opacity: 0.7, filter: "drop-shadow(0 0 5px rgba(212,175,55,0.4))" }} />
             <span style={{ fontSize: "11px", color: "rgba(107,114,128,0.8)", textTransform: "uppercase", letterSpacing: "0.18em" }}>Chai Street Trading</span>
           </div>
           <p style={{ fontSize: "12px", color: "rgba(107,114,128,0.7)" }}>© 2026 Chai Street. All rights reserved.</p>
